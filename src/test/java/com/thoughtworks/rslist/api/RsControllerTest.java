@@ -33,6 +33,29 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$.eventName", is("第三事件")))
                 .andExpect(jsonPath("$.keyWord", is("无分类")))
                 .andExpect(status().isOk());
+    }
 
+    @Test
+    void shouldGetRsEventBetween() throws Exception {
+        mockMvc.perform(get("/rs/list?start=1&end=2"))
+                .andExpect(jsonPath("$[0].eventName", is("第一事件")))
+                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
+                .andExpect(jsonPath("$[1].eventName", is("第二事件")))
+                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list?start=2&end=3"))
+                .andExpect(jsonPath("$[0].eventName", is("第二事件")))
+                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
+                .andExpect(jsonPath("$[1].eventName", is("第三事件")))
+                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list?start=1&end=3"))
+                .andExpect(jsonPath("$[0].eventName", is("第一事件")))
+                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
+                .andExpect(jsonPath("$[1].eventName", is("第二事件")))
+                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
+                .andExpect(jsonPath("$[2].eventName", is("第三事件")))
+                .andExpect(jsonPath("$[2].keyWord", is("无分类")))
+                .andExpect(status().isOk());
     }
 }
