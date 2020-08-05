@@ -6,6 +6,7 @@ import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +38,9 @@ public class RsController {
   }
 
   @PostMapping("/rs/event")
-  public void addOneRsEvent(@RequestBody RsEvent rsEvent) {
+  public void addOneRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+    if(rsEvent.getKeyWord()==null||rsEvent.getEventName()==null||rsEvent.getUser()==null)
+      return;
     rsList.add(rsEvent);
   }
 

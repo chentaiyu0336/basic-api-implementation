@@ -15,6 +15,8 @@ public class UserController {
 
     @PostMapping("/user")
     public void register(@RequestBody @Valid User user) {
+        if(users.contains(user))
+            return;
         users.add(user);
     }
 

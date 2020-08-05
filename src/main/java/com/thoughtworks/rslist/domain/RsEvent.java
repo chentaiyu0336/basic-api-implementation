@@ -1,10 +1,14 @@
 package com.thoughtworks.rslist.domain;
 
 
+import com.thoughtworks.rslist.api.UserController;
+
 import javax.validation.Valid;
 
 public class RsEvent {
     public RsEvent() {}
+
+
     private String eventName;
     private String keyWord;
     private @Valid User user;
@@ -16,6 +20,7 @@ public class RsEvent {
     public User getUser() {
         return user;
     }
+
 
     public RsEvent(String eventName, String keyWord, User user) {
         this.eventName = eventName;
