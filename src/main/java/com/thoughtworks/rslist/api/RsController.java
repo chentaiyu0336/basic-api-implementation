@@ -100,28 +100,17 @@ public class RsController {
     return ResponseEntity.ok(null);
   }
 
-//  @ExceptionHandler({InvalidIndexException.class, MethodArgumentNotValidException.class})
-//  public ResponseEntity<CommonError> handleException(Exception ex) {
-//    String errorMessage;
-//    if(ex instanceof MethodArgumentNotValidException) {
-//      errorMessage="invalid param";
-//    }
-//    else {
-//      errorMessage=ex.getMessage();
-//    }
-//    CommonError commonError = new CommonError(errorMessage);
-//    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commonError);
-//  }
-
   @ExceptionHandler({InvalidIndexException.class, MethodArgumentNotValidException.class})
   public ResponseEntity<CommonError> handleException(Exception ex) {
-    String errMessage;
-    if (ex instanceof InvalidIndexException)
-      errMessage = ex.getMessage();
-    else
-      errMessage = "invalid param";
-    CommonError err = new CommonError(errMessage);
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    String errorMessage;
+    if(ex instanceof MethodArgumentNotValidException) {
+      errorMessage="invalid param";
+    }
+    else {
+      errorMessage=ex.getMessage();
+    }
+    CommonError commonError = new CommonError(errorMessage);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commonError);
   }
 
 }
