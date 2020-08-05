@@ -30,7 +30,10 @@ public class RsController {
 
   @GetMapping("/rs/{index}")
   @JsonView(RsEvent.PublicView.class)
-  public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index) {
+  public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index) throws InvalidIndexException{
+    if(index<0||index>rsList.size()) {
+      throw new InvalidIndexException("invalid index");
+    }
     return ResponseEntity.ok(rsList.get(index-1));
   }
 

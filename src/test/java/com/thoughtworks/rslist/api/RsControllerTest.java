@@ -233,4 +233,11 @@ public class RsControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.commonError").value("invalid request param"));
     }
+
+    @Test
+    void shouldThrowException400WhenIndexOutOfRange() throws Exception {
+        mockMvc.perform(get("/rs/10"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.commonError").value("invalid index"));
+    }
 }
