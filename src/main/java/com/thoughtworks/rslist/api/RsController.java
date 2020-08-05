@@ -42,6 +42,9 @@ public class RsController {
     if(rsEvent.getKeyWord()==null||rsEvent.getEventName()==null||rsEvent.getUser()==null)
       return;
     rsList.add(rsEvent);
+    if(!UserController.users.contains(rsEvent.getUser())){
+      UserController.users.add(rsEvent.getUser());
+    }
   }
 
   @PostMapping("/rs/{index}")
@@ -74,4 +77,6 @@ public class RsController {
   public void deleteOneRsEvent(@PathVariable int index) {
     rsList.remove(index-1);
   }
+
+
 }
