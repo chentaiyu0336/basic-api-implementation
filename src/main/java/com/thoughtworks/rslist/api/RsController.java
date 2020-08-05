@@ -3,8 +3,11 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.rslist.domain.CommonError;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.exception.InvalidIndexException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,9 +37,12 @@ public class RsController {
   @GetMapping("/rs/list")
   @JsonView(RsEvent.PublicView.class)
   public ResponseEntity<List<RsEvent>> getRsEventBetween(@RequestParam(required = false) Integer start,
-                                   @RequestParam(required = false) Integer end) {
+                                   @RequestParam(required = false) Integer end) throws InvalidIndexException {
     if(start == null || end == null) {
       return ResponseEntity.ok(rsList);
+    }
+    if(start<0||end>rsList.size()) {
+      throw new InvalidIndexException("invalid request param");
     }
     return ResponseEntity.ok(rsList.subList(start-1, end));
   }
@@ -92,5 +98,10 @@ public class RsController {
     return ResponseEntity.ok(null);
   }
 
+  @ExceptionHandler(InvalidIndexException.class)
+  public ResponseEntity<CommonError> handleInvalidException(InvalidIndexException ex) {
+    CommonError commonError = new CommonError(ex.getMessage());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commonError);
+  }
 
 }
