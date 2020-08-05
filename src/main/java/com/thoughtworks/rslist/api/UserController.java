@@ -13,6 +13,7 @@ import java.util.List;
 public class UserController {
     public static List<User> users = new ArrayList<>();
 
+
     @PostMapping("/user")
     public void register(@RequestBody @Valid User user) {
         if(users.contains(user))
