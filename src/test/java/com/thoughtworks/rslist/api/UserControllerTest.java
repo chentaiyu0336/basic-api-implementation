@@ -24,7 +24,6 @@ public class UserControllerTest {
     @BeforeEach
     void setup() {
         UserController.users.clear();
-        UserController.users.add(new User("LiMin",20,"female","lm@163.com","12357435555"));
     }
 
     @Test
@@ -34,7 +33,7 @@ public class UserControllerTest {
         String userJson=objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        assertEquals(2, UserController.users.size());
+        assertEquals(1, UserController.users.size());
     }
 
     @Test
@@ -91,14 +90,5 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void shouldNotAddSameUser() throws Exception {
-        User user = new User("LiMin",20,"female","lm@163.com","12357435555");
-        ObjectMapper objectMapper=new ObjectMapper();
-        String userJson=objectMapper.writeValueAsString(user);
-        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        assertEquals(1, UserController.users.size());
-    }
 
 }

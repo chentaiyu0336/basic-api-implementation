@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,6 +32,8 @@ public class RsControllerTest {
     @BeforeEach
     public void beforeEach() {
         mockMvc = MockMvcBuilders.standaloneSetup(new RsController()).build();
+        User userXiaoMin = new User("XiaoMin",20,"male","xm@163.com","12357439274");
+        UserController.users.add(userXiaoMin);
     }
 
     @Test
@@ -209,6 +212,18 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$[2].keyWord", is("无分类")))
                 .andExpect(jsonPath("$[2]", hasKey("user")))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldNotAddSameUserInUserList() throws Exception {
+        User userXiaoMin = new User("XiaoMin",20,"male","xm@163.com","12357439274");
+        RsEvent rsEvent = new RsEvent("第四事件","无分类", userXiaoMin);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(post("/rs/event").content(requestJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        assertEquals(1, UserController.users.size());
     }
 
 }
