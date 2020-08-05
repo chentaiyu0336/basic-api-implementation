@@ -41,17 +41,17 @@ public class RsControllerTest {
         mockMvc.perform(get("/rs/1"))
                 .andExpect(jsonPath("$.eventName", is("第一事件")))
                 .andExpect(jsonPath("$.keyWord", is("无分类")))
-                .andExpect(jsonPath("$",hasKey("user")))
+                .andExpect(jsonPath("$", not(hasKey("user"))))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/2"))
                 .andExpect(jsonPath("$.eventName", is("第二事件")))
                 .andExpect(jsonPath("$.keyWord", is("无分类")))
-                .andExpect(jsonPath("$",hasKey("user")))
+                .andExpect(jsonPath("$", not(hasKey("user"))))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/3"))
                 .andExpect(jsonPath("$.eventName", is("第三事件")))
                 .andExpect(jsonPath("$.keyWord", is("无分类")))
-                .andExpect(jsonPath("$",hasKey("user")))
+                .andExpect(jsonPath("$", not(hasKey("user"))))
                 .andExpect(status().isOk());
     }
 
@@ -60,29 +60,29 @@ public class RsControllerTest {
         mockMvc.perform(get("/rs/list?start=1&end=2"))
                 .andExpect(jsonPath("$[0].eventName", is("第一事件")))
                 .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[0]", hasKey("user")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("第二事件")))
                 .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[1]", hasKey("user")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/list?start=2&end=3"))
                 .andExpect(jsonPath("$[0].eventName", is("第二事件")))
                 .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[0]", hasKey("user")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("第三事件")))
                 .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[1]", hasKey("user")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/list?start=1&end=3"))
                 .andExpect(jsonPath("$[0].eventName", is("第一事件")))
                 .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[0]", hasKey("user")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("第二事件")))
                 .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[1]", hasKey("user")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[2].eventName", is("第三事件")))
                 .andExpect(jsonPath("$[2].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[2]", hasKey("user")))
+                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
                 .andExpect(status().isOk());
     }
 
@@ -92,22 +92,23 @@ public class RsControllerTest {
         RsEvent rsEvent = new RsEvent("第四事件","无分类", userDaMin);
         ObjectMapper objectMapper = new ObjectMapper();
         String requestJson = objectMapper.writeValueAsString(rsEvent);
+        //String requestJson = "{\"eventName\":\"第四事件\",\"keyWord\":\"无分类\",\"user\":{\"name\":\"DaMin\",\"age\":30,\"gender\":\"male\",\"email\":\"dxm@163.com\",\"phone\":\"12357466274\"}";
         mockMvc.perform(post("/rs/event").content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$[0].eventName", is("第一事件")))
                 .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[0]", hasKey("user")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("第二事件")))
                 .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[1]", hasKey("user")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[2].eventName", is("第三事件")))
                 .andExpect(jsonPath("$[2].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[2]", hasKey("user")))
+                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[3].eventName", is("第四事件")))
                 .andExpect(jsonPath("$[3].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[3]", hasKey("user")))
+                .andExpect(jsonPath("$[3]", not(hasKey("user"))))
                 .andExpect(status().isOk());
     }
 
@@ -123,13 +124,13 @@ public class RsControllerTest {
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$[0].eventName", is("第一事件")))
                 .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[0]", hasKey("user")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("修改事件")))
                 .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[1]", hasKey("user")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[2].eventName", is("第三事件")))
                 .andExpect(jsonPath("$[2].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[2]", hasKey("user")))
+                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
                 .andExpect(status().isOk());
     }
 
@@ -139,10 +140,10 @@ public class RsControllerTest {
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$[0].eventName", is("第一事件")))
                 .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[0]", hasKey("user")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("第三事件")))
                 .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[1]", hasKey("user")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
                 .andExpect(status().isOk());
     }
 
@@ -159,13 +160,13 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].eventName", is("第一事件")))
                 .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[0]", hasKey("user")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("第二事件")))
                 .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[1]", hasKey("user")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[2].eventName", is("第三事件")))
                 .andExpect(jsonPath("$[2].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[2]", hasKey("user")))
+                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
                 .andExpect(status().isOk());
     }
 
@@ -182,13 +183,13 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].eventName", is("第一事件")))
                 .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[0]", hasKey("user")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("第二事件")))
                 .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[1]", hasKey("user")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[2].eventName", is("第三事件")))
                 .andExpect(jsonPath("$[2].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[2]", hasKey("user")))
+                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
                 .andExpect(status().isOk());
     }
 
@@ -204,13 +205,13 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].eventName", is("第一事件")))
                 .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[0]", hasKey("user")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("第二事件")))
                 .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[1]", hasKey("user")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[2].eventName", is("第三事件")))
                 .andExpect(jsonPath("$[2].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[2]", hasKey("user")))
+                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
                 .andExpect(status().isOk());
     }
 

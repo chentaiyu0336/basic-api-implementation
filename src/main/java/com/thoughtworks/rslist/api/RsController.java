@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
@@ -25,11 +26,13 @@ public class RsController {
 
 
   @GetMapping("/rs/{index}")
+  @JsonView(RsEvent.PublicView.class)
   public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index) {
     return ResponseEntity.ok(rsList.get(index-1));
   }
 
   @GetMapping("/rs/list")
+  @JsonView(RsEvent.PublicView.class)
   public ResponseEntity<List<RsEvent>> getRsEventBetween(@RequestParam(required = false) Integer start,
                                    @RequestParam(required = false) Integer end) {
     if(start == null || end == null) {
@@ -39,6 +42,7 @@ public class RsController {
   }
 
   @PostMapping("/rs/event")
+  @JsonView(RsEvent.PublicView.class)
   public ResponseEntity addOneRsEvent(@RequestBody @Valid RsEvent rsEvent) {
     Integer index;
     if(rsEvent.getKeyWord()!=null&&rsEvent.getEventName()!=null&&rsEvent.getUser()!=null) {
@@ -52,6 +56,7 @@ public class RsController {
   }
 
   @PostMapping("/rs/{index}")
+  @JsonView(RsEvent.PublicView.class)
   public ResponseEntity changeOneRsEvent(@PathVariable int index, @RequestBody String reString) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     RsEvent rsEvent = objectMapper.readValue(reString, RsEvent.class);
@@ -80,6 +85,7 @@ public class RsController {
   }
 
   @DeleteMapping("/rs/{index}")
+  @JsonView(RsEvent.PublicView.class)
   public ResponseEntity deleteOneRsEvent(@PathVariable int index) {
     rsList.remove(index-1);
     Integer index_Integer=index;

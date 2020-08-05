@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +8,7 @@ import javax.validation.constraints.*;
 
 @Data
 @NoArgsConstructor
+@JsonView(RsEvent.PrivateView.class)
 public class User {
     public User(String name, int age, String gender, String email, String phone) {
         this.name = name;
