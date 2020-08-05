@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,8 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -82,6 +82,35 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$[2].keyWord", is("无分类")))
                 .andExpect(jsonPath("$[3].eventName", is("第四事件")))
                 .andExpect(jsonPath("$[3].keyWord", is("无分类")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldChangeOneRsEvent() throws Exception {
+        RsEvent rsEvent = new RsEvent("修改事件",null);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String changeJson = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(post("/rs/2").content(changeJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(jsonPath("$[0].eventName", is("第一事件")))
+                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
+                .andExpect(jsonPath("$[1].eventName", is("修改事件")))
+                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
+                .andExpect(jsonPath("$[2].eventName", is("第三事件")))
+                .andExpect(jsonPath("$[2].keyWord", is("无分类")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldDeleteOneRsEvent() throws Exception {
+        mockMvc.perform(delete("/rs/2")).andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(jsonPath("$[0].eventName", is("第一事件")))
+                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
+                .andExpect(jsonPath("$[1].eventName", is("第三事件")))
+                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
                 .andExpect(status().isOk());
     }
 }
