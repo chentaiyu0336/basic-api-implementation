@@ -1,14 +1,26 @@
 package com.thoughtworks.rslist.domain;
 
+
+import javax.validation.Valid;
+
 public class RsEvent {
+    public RsEvent() {}
     private String eventName;
     private String keyWord;
+    private @Valid User user;
 
-    public RsEvent() {}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-    public RsEvent(String eventName, String keyWord) {
+    public User getUser() {
+        return user;
+    }
+
+    public RsEvent(String eventName, String keyWord, User user) {
         this.eventName = eventName;
         this.keyWord = keyWord;
+        this.user = user;
     }
 
     public String getEventName() {

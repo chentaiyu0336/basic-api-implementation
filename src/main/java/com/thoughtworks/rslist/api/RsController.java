@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.domain.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -14,9 +15,10 @@ public class RsController {
   private List<RsEvent> rsList = new ArrayList<RsEvent>();
 
   {
-    rsList.add(new RsEvent("第一事件", "无分类"));
-    rsList.add(new RsEvent("第二事件", "无分类"));
-    rsList.add(new RsEvent("第三事件", "无分类"));
+    User userXiaoMin = new User("XiaoMin",20,"male","xm@163.com","12357439274");
+    rsList.add(new RsEvent("第一事件", "无分类", userXiaoMin));
+    rsList.add(new RsEvent("第二事件", "无分类", userXiaoMin));
+    rsList.add(new RsEvent("第三事件", "无分类", userXiaoMin));
   }
 
 
@@ -35,9 +37,7 @@ public class RsController {
   }
 
   @PostMapping("/rs/event")
-  public void addOneRsEvent(@RequestBody String rsEventString) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper();
-    RsEvent rsEvent = objectMapper.readValue(rsEventString, RsEvent.class);
+  public void addOneRsEvent(@RequestBody RsEvent rsEvent) {
     rsList.add(rsEvent);
   }
 
@@ -51,10 +51,12 @@ public class RsController {
         return;
       }
       else {
+        replaceRsEvent.setUser(rsEvent.getUser());
         replaceRsEvent.setKeyWord(rsEvent.getKeyWord());
       }
     }
     else {
+      replaceRsEvent.setUser(rsEvent.getUser());
       replaceRsEvent.setEventName(rsEvent.getEventName());
       if(rsEvent.getKeyWord()==null) {
         return;
