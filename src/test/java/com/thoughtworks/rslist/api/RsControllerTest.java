@@ -94,7 +94,7 @@ public class RsControllerTest {
         String requestJson = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event").content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$[0].eventName", is("第一事件")))
                 .andExpect(jsonPath("$[0].keyWord", is("无分类")))
@@ -119,7 +119,7 @@ public class RsControllerTest {
         String changeJson = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/2").content(changeJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$[0].eventName", is("第一事件")))
                 .andExpect(jsonPath("$[0].keyWord", is("无分类")))
@@ -154,7 +154,7 @@ public class RsControllerTest {
         String requestJson = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event").content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(MockMvcRequestBuilders.get("/rs/list"))
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].eventName", is("第一事件")))
@@ -177,7 +177,7 @@ public class RsControllerTest {
         String requestJson = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event").content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(MockMvcRequestBuilders.get("/rs/list"))
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].eventName", is("第一事件")))
@@ -199,7 +199,7 @@ public class RsControllerTest {
         String requestJson = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event").content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(MockMvcRequestBuilders.get("/rs/list"))
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].eventName", is("第一事件")))
@@ -222,7 +222,7 @@ public class RsControllerTest {
         String requestJson = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event").content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         assertEquals(1, UserController.users.size());
     }
 
