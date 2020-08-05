@@ -148,74 +148,6 @@ public class RsControllerTest {
     }
 
     @Test
-    void shouldNotAddNullEventNameRsEvent() throws Exception {
-        User userDaMin = new User("DaMin",30,"male","dxm@163.com","12357466274");
-        RsEvent rsEvent = new RsEvent(null,"无分类", userDaMin);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestJson = objectMapper.writeValueAsString(rsEvent);
-        mockMvc.perform(post("/rs/event").content(requestJson)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-        mockMvc.perform(MockMvcRequestBuilders.get("/rs/list"))
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].eventName", is("第一事件")))
-                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
-                .andExpect(jsonPath("$[1].eventName", is("第二事件")))
-                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
-                .andExpect(jsonPath("$[2].eventName", is("第三事件")))
-                .andExpect(jsonPath("$[2].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void shouldNotAddNullKeyWordRsEvent() throws Exception {
-        User userDaMin = new User("DaMin",30,"male","dxm@163.com","12357466274");
-        RsEvent rsEvent = new RsEvent("第四事件",null, userDaMin);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestJson = objectMapper.writeValueAsString(rsEvent);
-        mockMvc.perform(post("/rs/event").content(requestJson)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-        mockMvc.perform(MockMvcRequestBuilders.get("/rs/list"))
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].eventName", is("第一事件")))
-                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
-                .andExpect(jsonPath("$[1].eventName", is("第二事件")))
-                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
-                .andExpect(jsonPath("$[2].eventName", is("第三事件")))
-                .andExpect(jsonPath("$[2].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void shouldNotAddNullUserRsEvent() throws Exception {
-        RsEvent rsEvent = new RsEvent("第四事件","无分类", null);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestJson = objectMapper.writeValueAsString(rsEvent);
-        mockMvc.perform(post("/rs/event").content(requestJson)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-        mockMvc.perform(MockMvcRequestBuilders.get("/rs/list"))
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].eventName", is("第一事件")))
-                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
-                .andExpect(jsonPath("$[1].eventName", is("第二事件")))
-                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
-                .andExpect(jsonPath("$[2].eventName", is("第三事件")))
-                .andExpect(jsonPath("$[2].keyWord", is("无分类")))
-                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
-                .andExpect(status().isOk());
-    }
-
-    @Test
     void shouldNotAddSameUserInUserList() throws Exception {
         User userXiaoMin = new User("XiaoMin",20,"male","xm@163.com","12357439274");
         RsEvent rsEvent = new RsEvent("第四事件","无分类", userXiaoMin);
@@ -240,4 +172,15 @@ public class RsControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.commonError").value("invalid index"));
     }
+
+    @Test
+    void shouldThrowException400WhenRsEventInvalid() throws Exception {
+        RsEvent rsEvent = new RsEvent("测试事件", null, null);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.commonError").value("invalid param"));
+    }
+
 }

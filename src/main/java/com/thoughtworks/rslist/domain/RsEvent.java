@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.thoughtworks.rslist.api.UserController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 public class RsEvent {
     public RsEvent() {}
@@ -17,12 +18,15 @@ public class RsEvent {
     }
 
     @JsonView(PublicView.class)
+    @NotNull
     private String eventName;
 
     @JsonView(PublicView.class)
+    @NotNull
     private String keyWord;
 
     @JsonView(PrivateView.class)
+    @NotNull
     private @Valid User user;
 
     public void setUser(User user) {

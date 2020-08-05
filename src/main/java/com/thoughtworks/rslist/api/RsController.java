@@ -9,6 +9,7 @@ import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.exception.InvalidIndexException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -54,11 +55,9 @@ public class RsController {
   @JsonView(RsEvent.PublicView.class)
   public ResponseEntity addOneRsEvent(@RequestBody @Valid RsEvent rsEvent) {
     Integer index;
-    if(rsEvent.getKeyWord()!=null&&rsEvent.getEventName()!=null&&rsEvent.getUser()!=null) {
-      rsList.add(rsEvent);
-    }
-    index=rsList.size();
-    if(!UserController.users.contains(rsEvent.getUser())){
+    rsList.add(rsEvent);
+    index = rsList.size();
+    if (!UserController.users.contains(rsEvent.getUser())) {
       UserController.users.add(rsEvent.getUser());
     }
     return ResponseEntity.created(null).header("index", index.toString()).build();
@@ -101,10 +100,28 @@ public class RsController {
     return ResponseEntity.ok(null);
   }
 
-  @ExceptionHandler(InvalidIndexException.class)
-  public ResponseEntity<CommonError> handleInvalidException(InvalidIndexException ex) {
-    CommonError commonError = new CommonError(ex.getMessage());
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commonError);
+//  @ExceptionHandler({InvalidIndexException.class, MethodArgumentNotValidException.class})
+//  public ResponseEntity<CommonError> handleException(Exception ex) {
+//    String errorMessage;
+//    if(ex instanceof MethodArgumentNotValidException) {
+//      errorMessage="invalid param";
+//    }
+//    else {
+//      errorMessage=ex.getMessage();
+//    }
+//    CommonError commonError = new CommonError(errorMessage);
+//    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commonError);
+//  }
+
+  @ExceptionHandler({InvalidIndexException.class, MethodArgumentNotValidException.class})
+  public ResponseEntity<CommonError> handleException(Exception ex) {
+    String errMessage;
+    if (ex instanceof InvalidIndexException)
+      errMessage = ex.getMessage();
+    else
+      errMessage = "invalid param";
+    CommonError err = new CommonError(errMessage);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
   }
 
 }
