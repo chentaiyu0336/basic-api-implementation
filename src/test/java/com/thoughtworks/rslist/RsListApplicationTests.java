@@ -52,7 +52,7 @@ class RsListApplicationTests {
     }
 
     @Test
-    void shouldGetUser() throws Exception {
+    void shouldGetUserById() throws Exception {
         UserEntity userEntity = addOneUser();
         mockMvc.perform(get("/user/" + userEntity.getId()).accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("name").value(userEntity.getUserName()))
@@ -64,7 +64,7 @@ class RsListApplicationTests {
     }
 
     @Test
-    void shouldDeleteUser() throws Exception {
+    void shouldDeleteUserById() throws Exception {
         UserEntity userEntity = addOneUser();
         mockMvc.perform(delete("/user/" + userEntity.getId()))
                 .andExpect(status().isOk());

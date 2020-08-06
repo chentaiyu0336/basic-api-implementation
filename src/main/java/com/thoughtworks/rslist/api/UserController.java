@@ -55,6 +55,11 @@ public class UserController {
         return user;
     }
 
+    @DeleteMapping("/user/{index}")
+    public void deleteUser(@PathVariable Integer index) {
+        userRepository.deleteById(index);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonError> handleException(MethodArgumentNotValidException ex) {
         CommonError commonError = new CommonError("invalid user");
