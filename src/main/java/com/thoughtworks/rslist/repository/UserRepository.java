@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity,Integer> {
     List<UserEntity> findAll();
+
+    UserEntity getUserById(Integer id);
 }

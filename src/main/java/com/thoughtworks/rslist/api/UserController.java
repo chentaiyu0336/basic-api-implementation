@@ -1,16 +1,15 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.thoughtworks.rslist.domain.CommonError;
+import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -38,9 +37,22 @@ public class UserController {
                 .age(user.getAge())
                 .email(user.getEmail())
                 .phone(user.getPhone())
-                .voteNum(user.getVote())
+                //.voteNum(user.getVote())
                 .build();
         userRepository.save(userEntity);
+    }
+
+    @GetMapping("/user/{index}")
+    public User getUser(@PathVariable Integer index) {
+        UserEntity userEntity = userRepository.getUserById(index);
+        User user = User.builder()
+                .name(userEntity.getUserName())
+                .gender(userEntity.getGender())
+                .age(userEntity.getAge())
+                .email(userEntity.getEmail())
+                .phone(userEntity.getPhone())
+                .build();
+        return user;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

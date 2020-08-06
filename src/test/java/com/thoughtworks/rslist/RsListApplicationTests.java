@@ -16,7 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -49,4 +50,38 @@ class RsListApplicationTests {
         assertEquals(1,userEntityList.size());
         assertEquals("XiaoMin",userEntityList.get(0).getUserName());
     }
+
+    @Test
+    void shouldGetUser() throws Exception {
+        UserEntity userEntity = addOneUser();
+        mockMvc.perform(get("/user/" + userEntity.getId()).accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("name").value(userEntity.getUserName()))
+                .andExpect(jsonPath("age").value(userEntity.getAge()))
+                .andExpect(jsonPath("gender").value(userEntity.getGender()))
+                .andExpect(jsonPath("email").value(userEntity.getEmail()))
+                .andExpect(jsonPath("phone").value(userEntity.getPhone()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldDeleteUser() throws Exception {
+        UserEntity userEntity = addOneUser();
+        mockMvc.perform(delete("/user/" + userEntity.getId()))
+                .andExpect(status().isOk());
+        assertEquals(false, userRepository.findById(userEntity.getId()).isPresent());
+
+    }
+
+    private UserEntity addOneUser() {
+        UserEntity userEntity = UserEntity.builder()
+                .userName("Lin")
+                .age(23)
+                .gender("female")
+                .email("li@163.com")
+                .phone("12345678909")
+                .build();
+        userEntity = userRepository.save(userEntity);
+        return userEntity;
+    }
+
 }

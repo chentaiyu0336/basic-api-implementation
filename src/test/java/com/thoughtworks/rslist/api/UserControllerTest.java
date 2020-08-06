@@ -26,13 +26,10 @@ public class UserControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    UserRepository userRepository;
 
     @BeforeEach
     void setup() {
         UserController.users.clear();
-        userRepository.deleteAll();
 
     }
 
