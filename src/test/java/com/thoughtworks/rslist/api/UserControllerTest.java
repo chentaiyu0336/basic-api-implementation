@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -90,5 +91,14 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void shouldThrowException400WhenUserInvalid() throws Exception {
+        User user = new User("XiaoMin",20,null,"xm@163.com","12357439274");
+        ObjectMapper objectMapper=new ObjectMapper();
+        String userJson=objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.commonError").value("invalid user"));
+    }
 
 }
