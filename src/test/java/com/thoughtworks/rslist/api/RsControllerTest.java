@@ -169,54 +169,60 @@ public class RsControllerTest {
 //                .andExpect(status().isOk());
 //    }
 //
-//    @Test
-//    void shouldAddOneRsEvent() throws Exception {
-//        User userDaMin = new User("DaMin",30,"male","dxm@163.com","12357466274");
-//        RsEvent rsEvent = new RsEvent("第四事件","无分类", userDaMin);
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String requestJson = objectMapper.writeValueAsString(rsEvent);
-//        //String requestJson = "{\"eventName\":\"第四事件\",\"keyWord\":\"无分类\",\"user\":{\"name\":\"DaMin\",\"age\":30,\"gender\":\"male\",\"email\":\"dxm@163.com\",\"phone\":\"12357466274\"}";
-//        mockMvc.perform(post("/rs/event").content(requestJson)
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isCreated());
-//        mockMvc.perform(get("/rs/list"))
-//                .andExpect(jsonPath("$[0].eventName", is("第一事件")))
-//                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
-//                .andExpect(jsonPath("$[1].eventName", is("第二事件")))
-//                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
-//                .andExpect(jsonPath("$[2].eventName", is("第三事件")))
-//                .andExpect(jsonPath("$[2].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
-//                .andExpect(jsonPath("$[3].eventName", is("第四事件")))
-//                .andExpect(jsonPath("$[3].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[3]", not(hasKey("user"))))
-//                .andExpect(status().isOk());
-//    }
-//
-//    @Test
-//    void shouldChangeOneRsEvent() throws Exception {
-//        User userDaMin = new User("DaMin",30,"male","dxm@163.com","12357466274");
-//        RsEvent rsEvent = new RsEvent("修改事件",null, userDaMin);
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String changeJson = objectMapper.writeValueAsString(rsEvent);
-//        mockMvc.perform(post("/rs/2").content(changeJson)
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isCreated());
-//        mockMvc.perform(get("/rs/list"))
-//                .andExpect(jsonPath("$[0].eventName", is("第一事件")))
-//                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
-//                .andExpect(jsonPath("$[1].eventName", is("修改事件")))
-//                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
-//                .andExpect(jsonPath("$[2].eventName", is("第三事件")))
-//                .andExpect(jsonPath("$[2].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
-//                .andExpect(status().isOk());
-//    }
-//
+
+
+    @Test
+    void shouldUpdateRsEventNameAndKeyWordWhenBothValid() throws Exception {
+        RsEventEntity rsEventEntity = rsEventEntityList.get(0);
+        RsEvent rsEvent = new RsEvent("update name","update keyword",rsEventEntity.getUserId());
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(patch("/rs/"+rsEventEntity.getId()).contentType(MediaType.APPLICATION_JSON).content(requestJson))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/"+rsEventEntity.getId()))
+                .andExpect(jsonPath("$.eventName").value(rsEvent.getEventName()))
+                .andExpect(jsonPath("$.keyword").value(rsEvent.getKeyword()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldUpdateRsEventNameOnlyWhenKeyWordIsNull() throws Exception {
+        RsEventEntity rsEventEntity = rsEventEntityList.get(0);
+        RsEvent rsEvent = new RsEvent("update name",null,rsEventEntity.getUserId());
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(patch("/rs/"+rsEventEntity.getId()).contentType(MediaType.APPLICATION_JSON).content(requestJson))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/"+rsEventEntity.getId()))
+                .andExpect(jsonPath("$.eventName").value(rsEvent.getEventName()))
+                .andExpect(jsonPath("$.keyword").value(rsEventEntity.getKeyword()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldUpdateKeyWorldOnlyWhenEventNameIsNull() throws Exception {
+        RsEventEntity rsEventEntity = rsEventEntityList.get(0);
+        RsEvent rsEvent = new RsEvent(null,"update keyword",rsEventEntity.getUserId());
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(patch("/rs/"+rsEventEntity.getId()).contentType(MediaType.APPLICATION_JSON).content(requestJson))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/"+rsEventEntity.getId()))
+                .andExpect(jsonPath("$.eventName").value(rsEventEntity.getEventName()))
+                .andExpect(jsonPath("$.keyword").value(rsEvent.getKeyword()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldThrow400WhenUserIdIsNotCorrect() throws Exception {
+        RsEventEntity rsEventEntity = rsEventEntityList.get(0);
+        RsEvent rsEvent = new RsEvent("update name","update keyword",1000);
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(patch("/rs/"+rsEventEntity.getId()).contentType(MediaType.APPLICATION_JSON).content(requestJson))
+                .andExpect(status().isBadRequest());
+    }
+
 //    @Test
 //    void shouldDeleteOneRsEvent() throws Exception {
 //        mockMvc.perform(delete("/rs/2")).andExpect(status().isOk());

@@ -89,36 +89,26 @@ public class RsController {
     return ResponseEntity.created(null).build();
   }
 
-//
-//  @PostMapping("/rs/{index}")
-//  @JsonView(RsEvent.PublicView.class)
-//  public ResponseEntity changeOneRsEvent(@PathVariable int index, @RequestBody String reString) throws JsonProcessingException {
-//    ObjectMapper objectMapper = new ObjectMapper();
-//    RsEvent rsEvent = objectMapper.readValue(reString, RsEvent.class);
-//    RsEvent replaceRsEvent = rsList.get(index-1);
-//    Integer index_Integer=index;
-//    if(rsEvent.getEventName()==null) {
-//      if(rsEvent.getKeyWord()==null) {
-//        return ResponseEntity.created(null).header("index",index_Integer.toString()).build();
-//      }
-//      else {
-//        replaceRsEvent.setUser(rsEvent.getUser());
-//        replaceRsEvent.setKeyWord(rsEvent.getKeyWord());
-//      }
-//    }
-//    else {
-//      replaceRsEvent.setUser(rsEvent.getUser());
-//      replaceRsEvent.setEventName(rsEvent.getEventName());
-//      if(rsEvent.getKeyWord()==null) {
-//        return ResponseEntity.created(null).header("index",index_Integer.toString()).build();
-//      }
-//      else {
-//        replaceRsEvent.setKeyWord(rsEvent.getKeyWord());
-//      }
-//    }
-//    return ResponseEntity.created(null).header("index",index_Integer.toString()).build();
-//  }
-//
+
+  @PatchMapping("/rs/{index}")
+  @JsonView(RsEvent.PublicView.class)
+  public ResponseEntity updateOneRsEvent(@PathVariable int index, @RequestBody RsEvent rsEvent) {
+    Optional<RsEventEntity> optionalRsEventEntity = rsEventRepository.findById(index);
+    if(optionalRsEventEntity.isPresent() &&optionalRsEventEntity.get().getUserId().equals(rsEvent.getUserId())) {
+      RsEventEntity rsEventEntity = optionalRsEventEntity.get();
+      if(rsEvent.getEventName()!=null) {
+        rsEventEntity.setEventName(rsEvent.getEventName());
+      }
+      if(rsEvent.getKeyword()!=null) {
+        rsEventEntity.setKeyword(rsEvent.getKeyword());
+      }
+      rsEventRepository.save(rsEventEntity);
+      return ResponseEntity.ok().build();
+    }
+    else
+      return ResponseEntity.badRequest().build();
+  }
+
 //  @DeleteMapping("/rs/{index}")
 //  @JsonView(RsEvent.PublicView.class)
 //  public ResponseEntity deleteOneRsEvent(@PathVariable int index) {
