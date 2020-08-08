@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.thoughtworks.rslist.domain.CommonError;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -71,17 +73,21 @@ public class RsController {
 //    return ResponseEntity.ok(rsList.subList(start-1, end));
 //  }
 //
-//  @PostMapping("/rs/event")
-//  @JsonView(RsEvent.PublicView.class)
-//  public ResponseEntity addOneRsEvent(@RequestBody @Valid RsEvent rsEvent) {
-//    Integer index;
-//    rsList.add(rsEvent);
-//    index = rsList.size();
-//    if (!UserController.users.contains(rsEvent.getUser())) {
-//      UserController.users.add(rsEvent.getUser());
-//    }
-//    return ResponseEntity.created(null).header("index", index.toString()).build();
-//  }
+  @PostMapping("/rs/event")
+  @JsonView(RsEvent.PublicView.class)
+  public ResponseEntity addOneRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+    if (!hasRegistered(rsEvent.getUserId())) {
+      return ResponseEntity.badRequest().build();
+    }
+    RsEventEntity eventEntity = RsEventEntity.builder()
+            .eventName(rsEvent.getEventName())
+            .keyword(rsEvent.getKeyword())
+            .userId(rsEvent.getUserId())
+            .votNum(0)
+            .build();
+    rsEventRepository.save(eventEntity);
+    return ResponseEntity.created(null).build();
+  }
 //
 //  @PostMapping("/rs/{index}")
 //  @JsonView(RsEvent.PublicView.class)
@@ -119,6 +125,10 @@ public class RsController {
 //    Integer index_Integer=index;
 //    return ResponseEntity.ok(null);
 //  }
+
+  public boolean hasRegistered(Integer id) {
+    return userRepository.findById(id).isPresent();
+  }
 
   @ExceptionHandler({InvalidIndexException.class, MethodArgumentNotValidException.class})
   public ResponseEntity<CommonError> handleException(Exception ex) {

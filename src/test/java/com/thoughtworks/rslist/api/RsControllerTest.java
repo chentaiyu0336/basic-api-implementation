@@ -1,5 +1,7 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 
@@ -35,12 +38,10 @@ public class RsControllerTest {
 
     private UserEntity userEntity;
     private List<RsEventEntity> rsEventEntityList;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void beforeEach() {
-        //mockMvc = MockMvcBuilders.standaloneSetup(new RsController()).build();
-//        User userXiaoMin = new User("XiaoMin",20,"male","xm@163.com","12357439274");
-//        UserController.users.add(userXiaoMin);
         rsEventRepository.deleteAll();
         userRepository.deleteAll();
         userEntity = UserEntity.builder()
@@ -73,6 +74,30 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$.keyword").value(rsEventEntity.getKeyword()))
                 .andExpect(jsonPath("$.userId").value(rsEventEntity.getUserId()))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldAddOneRsEventWhenUserIsRegistered() throws Exception {
+        RsEvent rsEvent = new RsEvent("event name 4","keyword 4",userEntity.getId());
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/event").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+                .andExpect(status().isCreated());
+        rsEventEntityList=rsEventRepository.findAll();
+        RsEventEntity rsEventEntity=rsEventEntityList.get(rsEventEntityList.size()-1);
+        assertEquals(4,rsEventEntityList.size());
+        assertEquals(rsEvent.getEventName(), rsEventEntity.getEventName());
+        assertEquals(rsEvent.getUserId(),rsEventEntity.getUserId());
+        assertEquals(rsEvent.getKeyword(),rsEventEntity.getKeyword());
+    }
+
+    @Test
+    void shouldThrowException400WhenUnRegisteredUserAddRsEvent() throws Exception {
+        RsEvent rsEvent = new RsEvent("event name 4","keyword 4",100);
+        String requestJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/event").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+                .andExpect(status().isBadRequest());
     }
 
 //    @Test
