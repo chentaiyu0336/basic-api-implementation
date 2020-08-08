@@ -60,76 +60,68 @@ public class UserControllerTest {
 //    @Test
 //    void shouldRegisterUser() throws Exception {
 //        User user = new User("XiaoMin",20,"male","xm@163.com","12357439274");
-//        ObjectMapper objectMapper=new ObjectMapper();
 //        String userJson=objectMapper.writeValueAsString(user);
 //        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
 //                .andExpect(status().isOk());
 //        assertEquals(1, UserController.users.size());
 //    }
-//
-//    @Test
-//    void nameShouldLessThan8() throws Exception {
-//        User user = new User("XiaoMinErro",20,"male","xm@163.com","12357439274");
-//        ObjectMapper objectMapper=new ObjectMapper();
-//        String userJson=objectMapper.writeValueAsString(user);
-//        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//    }
-//
-//    @Test
-//    void ageShouldMoreThen18() throws Exception {
-//        User user = new User("XiaoMin",10,"male","xm@163.com","12357439274");
-//        ObjectMapper objectMapper=new ObjectMapper();
-//        String userJson=objectMapper.writeValueAsString(user);
-//        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//    }
-//
-//    @Test
-//    void ageShouldLessThen100() throws Exception {
-//        User user = new User("XiaoMin",110,"male","xm@163.com","12357439274");
-//        ObjectMapper objectMapper=new ObjectMapper();
-//        String userJson=objectMapper.writeValueAsString(user);
-//        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//    }
-//
-//    @Test
-//    void genderShouldNotBeNull() throws Exception {
-//        User user = new User("XiaoMin",20,null,"xm@163.com","12357439274");
-//        ObjectMapper objectMapper=new ObjectMapper();
-//        String userJson=objectMapper.writeValueAsString(user);
-//        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//    }
-//
-//    @Test
-//    void emailShouldBeValid() throws Exception {
-//        User user = new User("XiaoMin",20,"male","xm163.com","12357439274");
-//        ObjectMapper objectMapper=new ObjectMapper();
-//        String userJson=objectMapper.writeValueAsString(user);
-//        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//    }
-//
-//    @Test
-//    void phoneNumShouldEqual11_StartWith1() throws Exception {
-//        User user = new User("XiaoMin",20,"male","xm@163.com","2235743349274");
-//        ObjectMapper objectMapper=new ObjectMapper();
-//        String userJson=objectMapper.writeValueAsString(user);
-//        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//    }
-//
-//    @Test
-//    void shouldThrowException400WhenUserInvalid() throws Exception {
-//        User user = new User("XiaoMin",20,null,"xm@163.com","12357439274");
-//        ObjectMapper objectMapper=new ObjectMapper();
-//        String userJson=objectMapper.writeValueAsString(user);
-//        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("$.commonError").value("invalid user"));
-//    }
+
+    @Test
+    void nameShouldLessThan8() throws Exception {
+        User user = new User("XiaoMinErro",20,"male","xm@163.com","12357439274");
+        String userJson=objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void ageShouldMoreThen18() throws Exception {
+        User user = new User("XiaoMin",10,"male","xm@163.com","12357439274");
+        String userJson=objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void ageShouldLessThen100() throws Exception {
+        User user = new User("XiaoMin",110,"male","xm@163.com","12357439274");
+        String userJson=objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void genderShouldNotBeNull() throws Exception {
+        User user = new User("XiaoMin",20,null,"xm@163.com","12357439274");
+        String userJson=objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void emailShouldBeValid() throws Exception {
+        User user = new User("XiaoMin",20,"male","xm163.com","12357439274");
+        String userJson=objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void phoneNumShouldEqual11_StartWith1() throws Exception {
+        User user = new User("XiaoMin",20,"male","xm@163.com","2235743349274");
+        String userJson=objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldThrowException400WhenUserInvalid() throws Exception {
+        User user = new User("XiaoMin",20,null,"xm@163.com","12357439274");
+        String userJson=objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.commonError").value("invalid user"));
+    }
 
     @Test
     void shouldAddUser() throws Exception {
