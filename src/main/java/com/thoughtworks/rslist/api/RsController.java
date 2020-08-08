@@ -88,6 +88,7 @@ public class RsController {
     rsEventRepository.save(eventEntity);
     return ResponseEntity.created(null).build();
   }
+
 //
 //  @PostMapping("/rs/{index}")
 //  @JsonView(RsEvent.PublicView.class)

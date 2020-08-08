@@ -100,6 +100,7 @@ public class RsControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+
 //    @Test
 //    void shouldGetOneRsEvent() throws Exception {
 //        UserEntity userSave = userRepository.save(userEntity);
