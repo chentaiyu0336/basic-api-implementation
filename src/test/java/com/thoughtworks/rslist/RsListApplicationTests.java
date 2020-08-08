@@ -72,6 +72,7 @@ class RsListApplicationTests {
 
     }
 
+
     private UserEntity addOneUser() {
         UserEntity userEntity = UserEntity.builder()
                 .userName("Lin")

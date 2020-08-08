@@ -5,12 +5,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.thoughtworks.rslist.api.UserController;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
-public class RsEvent {
-    public RsEvent() {}
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class RsEvent implements Serializable {
 
     public interface PublicView {
     }
@@ -23,40 +31,31 @@ public class RsEvent {
 
     @JsonView(PublicView.class)
     @NotNull
-    private String keyWord;
+    private String keyword;
 
     @JsonView(PrivateView.class)
     @NotNull
-    private @Valid User user;
+    private int userId;
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-
-    public RsEvent(String eventName, String keyWord, User user) {
-        this.eventName = eventName;
-        this.keyWord = keyWord;
-        this.user = user;
-    }
-
-    public String getEventName() {
-        return eventName;
-    }
-
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
-    }
-
-    public String getKeyWord() {
-        return keyWord;
-    }
-
-    public void setKeyWord(String keyWord) {
-        this.keyWord = keyWord;
-    }
+//    public RsEvent(String eventName, String keyWord, User user) {
+//        this.eventName = eventName;
+//        this.keyWord = keyWord;
+//        this.user = user;
+//    }
+//
+//    public String getEventName() {
+//        return eventName;
+//    }
+//
+//    public void setEventName(String eventName) {
+//        this.eventName = eventName;
+//    }
+//
+//    public String getKeyWord() {
+//        return keyWord;
+//    }
+//
+//    public void setKeyWord(String keyWord) {
+//        this.keyWord = keyWord;
+//    }
 }

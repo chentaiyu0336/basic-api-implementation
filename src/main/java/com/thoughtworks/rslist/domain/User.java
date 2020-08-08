@@ -1,12 +1,14 @@
 package com.thoughtworks.rslist.domain;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.thoughtworks.rslist.entity.RsEventEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -40,4 +42,5 @@ public class User {
     private String phone;
 
     //private int vote=10;
+
 }
