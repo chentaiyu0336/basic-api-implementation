@@ -71,56 +71,56 @@ public class UserControllerTest {
 
     @Test
     void nameShouldLessThan8() throws Exception {
-        User user = new User("XiaoMinErro",20,"male","xm@163.com","12357439274");
-        String userJson=objectMapper.writeValueAsString(user);
+        User user = new User("XiaoMinErro", 20, "male", "xm@163.com", "12357439274");
+        String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void ageShouldMoreThen18() throws Exception {
-        User user = new User("XiaoMin",10,"male","xm@163.com","12357439274");
-        String userJson=objectMapper.writeValueAsString(user);
+        User user = new User("XiaoMin", 10, "male", "xm@163.com", "12357439274");
+        String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void ageShouldLessThen100() throws Exception {
-        User user = new User("XiaoMin",110,"male","xm@163.com","12357439274");
-        String userJson=objectMapper.writeValueAsString(user);
+        User user = new User("XiaoMin", 110, "male", "xm@163.com", "12357439274");
+        String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void genderShouldNotBeNull() throws Exception {
-        User user = new User("XiaoMin",20,null,"xm@163.com","12357439274");
-        String userJson=objectMapper.writeValueAsString(user);
+        User user = new User("XiaoMin", 20, null, "xm@163.com", "12357439274");
+        String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void emailShouldBeValid() throws Exception {
-        User user = new User("XiaoMin",20,"male","xm163.com","12357439274");
-        String userJson=objectMapper.writeValueAsString(user);
+        User user = new User("XiaoMin", 20, "male", "xm163.com", "12357439274");
+        String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void phoneNumShouldEqual11_StartWith1() throws Exception {
-        User user = new User("XiaoMin",20,"male","xm@163.com","2235743349274");
-        String userJson=objectMapper.writeValueAsString(user);
+        User user = new User("XiaoMin", 20, "male", "xm@163.com", "2235743349274");
+        String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void shouldThrowException400WhenUserInvalid() throws Exception {
-        User user = new User("XiaoMin",20,null,"xm@163.com","12357439274");
-        String userJson=objectMapper.writeValueAsString(user);
+        User user = new User("XiaoMin", 20, null, "xm@163.com", "12357439274");
+        String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.commonError").value("invalid user"));
@@ -128,13 +128,13 @@ public class UserControllerTest {
 
     @Test
     void shouldAddUser() throws Exception {
-        User user = new User("XiaoMin",20,"male","xm@163.com","12357439274");
-        String userJson=objectMapper.writeValueAsString(user);
+        User user = new User("XiaoMin", 20, "male", "xm@163.com", "12357439274");
+        String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").contentType(MediaType.APPLICATION_JSON).content(userJson))
                 .andExpect(status().isOk());
         List<UserEntity> userEntityList = userRepository.findAll();
-        assertEquals(2,userEntityList.size());
-        assertEquals("XiaoMin",userEntityList.get(1).getUserName());
+        assertEquals(2, userEntityList.size());
+        assertEquals("XiaoMin", userEntityList.get(1).getUserName());
     }
 
     @Test
@@ -158,10 +158,10 @@ public class UserControllerTest {
 
     @Test
     void shouldDeleteAllEventsWhenDeleteUser() throws Exception {
-        mockMvc.perform(delete("/user/"+userEntity.getId()).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/user/" + userEntity.getId()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        assertEquals(0,rsEventRepository.findAll().size());
-        assertEquals(0,userRepository.findAll().size());
+        assertEquals(0, rsEventRepository.findAll().size());
+        assertEquals(0, userRepository.findAll().size());
     }
 
     private UserEntity addOneUser() {

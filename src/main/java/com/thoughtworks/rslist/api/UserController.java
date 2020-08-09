@@ -44,7 +44,7 @@ public class UserController {
 
     @GetMapping("/user/{index}")
     public User getUser(@PathVariable Integer index) {
-        UserEntity userEntity = userRepository.getUserById(index);
+        UserEntity userEntity = userRepository.findById(index).get();
         User user = User.builder()
                 .name(userEntity.getUserName())
                 .gender(userEntity.getGender())

@@ -28,8 +28,8 @@ public class VoteEntity {
     private Integer userId;
     @ManyToOne
     @JoinColumn(name = "rs_event_id", insertable = false, updatable = false)
-    private RsEventEntity rsEventEntity;
+    private RsEventEntity rsEvent;
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private UserEntity userEntity;
+    private UserEntity user;
 }

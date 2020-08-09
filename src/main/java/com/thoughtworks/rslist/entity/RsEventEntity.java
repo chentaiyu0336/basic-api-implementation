@@ -1,4 +1,5 @@
 package com.thoughtworks.rslist.entity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class RsEventEntity {
     @Column(name = "user_id")
     private Integer userId;
 
-    @JoinColumn(name="user_id",insertable = false,updatable = false)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 

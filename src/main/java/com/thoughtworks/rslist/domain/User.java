@@ -22,7 +22,7 @@ public class User {
         this.phone = phone;
     }
 
-    @Size(max=8)
+    @Size(max = 8)
     @NotNull
     private String name;
 
@@ -37,7 +37,7 @@ public class User {
     @Email
     private String email;
 
-    @Pattern(regexp="1\\d{10}")
+    @Pattern(regexp = "1\\d{10}")
     @NotNull
     private String phone;
 
