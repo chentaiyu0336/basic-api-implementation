@@ -4,17 +4,23 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.thoughtworks.rslist.domain.CommonError;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.domain.Vote;
 import com.thoughtworks.rslist.entity.RsEventEntity;
+import com.thoughtworks.rslist.entity.UserEntity;
+import com.thoughtworks.rslist.entity.VoteEntity;
 import com.thoughtworks.rslist.exception.InvalidIndexException;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import com.thoughtworks.rslist.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
@@ -23,8 +29,11 @@ public class RsController {
   UserRepository userRepository;
   @Autowired
   RsEventRepository rsEventRepository;
+  @Autowired
+  VoteRepository voteRepository;
 
   @GetMapping("/rs/{id}")
+  @JsonView(RsEvent.PublicView.class)
   public ResponseEntity<RsEvent> getOneRsEventById(@PathVariable Integer id) throws InvalidIndexException {
     Optional<RsEventEntity> rsEntityOptional = rsEventRepository.findById(id);
     if (rsEntityOptional.isPresent()) {
@@ -109,13 +118,43 @@ public class RsController {
       return ResponseEntity.badRequest().build();
   }
 
-//  @DeleteMapping("/rs/{index}")
+//  @Transactional
+//  @PostMapping("/rs/vote/{eventId}")
 //  @JsonView(RsEvent.PublicView.class)
-//  public ResponseEntity deleteOneRsEvent(@PathVariable int index) {
-//    rsList.remove(index-1);
-//    Integer index_Integer=index;
-//    return ResponseEntity.ok(null);
+//  public ResponseEntity vote(@PathVariable Integer eventId, @RequestBody @Valid Vote vote) {
+//    Integer userId = vote.getUserId();
+//    Optional<RsEventEntity> optionalRsEventEntity = rsEventRepository.findById(eventId);
+//    Optional<UserEntity> optionalUserEntity = userRepository.findById(userId);
+//    if(!optionalRsEventEntity.isPresent()||!optionalUserEntity.isPresent()) {
+//      return ResponseEntity.badRequest().build();
+//    }
+//
+//    RsEventEntity rsEventEntity = optionalRsEventEntity.get();
+//    UserEntity userEntity = optionalUserEntity.get();
+//    if(vote.getVoteNum()>userEntity.getVoteNum()) {
+//      return ResponseEntity.badRequest().build();
+//    }
+//    VoteEntity voteEntity = VoteEntity.builder()
+//            .voteNum(vote.getVoteNum())
+//            .voteTime(LocalDateTime.parse(vote.getVoteTime()))
+//            .rsEventId(rsEventEntity.getId())
+//            .userId(userEntity.getId())
+//            .build();
+//    rsEventEntity.setVotNum(rsEventEntity.getVotNum() + vote.getVoteNum());
+//    userEntity.setVoteNum(userEntity.getVoteNum() - vote.getVoteNum());
+//    voteRepository.save(voteEntity);
+//    rsEventRepository.save(rsEventEntity);
+//    userRepository.save(userEntity);
+//
+//    return ResponseEntity.ok().build();
 //  }
+
+  @DeleteMapping("/rs/{id}")
+  @JsonView(RsEvent.PublicView.class)
+  public ResponseEntity deleteOneRsEvent(@PathVariable Integer id) {
+    rsEventRepository.deleteById(id);
+    return ResponseEntity.ok(null);
+  }
 
   public boolean hasRegistered(Integer id) {
     return userRepository.findById(id).isPresent();

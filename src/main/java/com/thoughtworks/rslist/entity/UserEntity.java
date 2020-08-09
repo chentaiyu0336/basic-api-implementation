@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 public class UserEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
     @Column(name = "name")
     private String userName;

@@ -7,6 +7,7 @@ import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import com.thoughtworks.rslist.repository.VoteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class UserControllerTest {
     UserRepository userRepository;
     @Autowired
     RsEventRepository rsEventRepository;
+    @Autowired
+    VoteRepository voteRepository;
 
     private UserEntity userEntity;
     private List<RsEventEntity> rsEventEntityList;
@@ -41,7 +44,7 @@ public class UserControllerTest {
 
     @BeforeEach
     void setup() {
-        //UserController.users.clear();
+        voteRepository.deleteAll();
         rsEventRepository.deleteAll();
         userRepository.deleteAll();
         userEntity = addOneUser();
@@ -168,6 +171,7 @@ public class UserControllerTest {
                 .gender("female")
                 .email("li@163.com")
                 .phone("12345678909")
+                .voteNum(10)
                 .build();
         userEntity = userRepository.save(userEntity);
         return userEntity;
