@@ -54,7 +54,7 @@ public class RsController {
     }
 
 
-    @GetMapping("/rs/list")
+    @GetMapping("/rs")
     public ResponseEntity<List<RsEvent>> getRsEventBetween(@RequestParam(required = false) Integer start,
                                                            @RequestParam(required = false) Integer end) throws InvalidIndexException {
         List<RsEvent> rsEvents = rsEventRepository.findAll().stream()
@@ -89,7 +89,7 @@ public class RsController {
         return ResponseEntity.ok(voteList);
     }
 
-    @PostMapping("/rs/event")
+    @PostMapping("/rs")
     public ResponseEntity addOneRsEvent(@RequestBody @Valid RsEvent rsEvent) {
         if (!hasRegistered(rsEvent.getUserId())) {
             return ResponseEntity.badRequest().build();

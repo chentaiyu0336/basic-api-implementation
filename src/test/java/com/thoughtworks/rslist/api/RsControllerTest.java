@@ -94,7 +94,7 @@ public class RsControllerTest {
         RsEvent rsEvent = new RsEvent("event name 4", "keyword 4", userEntity.getId());
         String requestJson = objectMapper.writeValueAsString(rsEvent);
 
-        mockMvc.perform(post("/rs/event").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        mockMvc.perform(post("/rs").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andExpect(status().isCreated());
         rsEventEntityList = rsEventRepository.findAll();
         RsEventEntity rsEventEntity = rsEventEntityList.get(rsEventEntityList.size() - 1);
@@ -109,7 +109,7 @@ public class RsControllerTest {
         RsEvent rsEvent = new RsEvent("event name 4", "keyword 4", 100);
         String requestJson = objectMapper.writeValueAsString(rsEvent);
 
-        mockMvc.perform(post("/rs/event").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+        mockMvc.perform(post("/rs").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andExpect(status().isBadRequest());
     }
 
@@ -119,7 +119,7 @@ public class RsControllerTest {
         RsEventEntity rsStart = rsEventEntityList.get(0);
         RsEventEntity rsEnd = rsEventEntityList.get(1);
 
-        mockMvc.perform(get("/rs/list?start=1&end=2"))
+        mockMvc.perform(get("/rs?start=1&end=2"))
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].eventName").value(rsStart.getEventName()))
                 .andExpect(jsonPath("$[0].keyword").value(rsStart.getKeyword()))
@@ -206,7 +206,7 @@ public class RsControllerTest {
 //
     @Test
     void shouldThrowException400WhenOutOfRange() throws Exception {
-        mockMvc.perform(get("/rs/list?start=0&end=10"))
+        mockMvc.perform(get("/rs?start=0&end=10"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.commonError").value("invalid request param"));
     }
