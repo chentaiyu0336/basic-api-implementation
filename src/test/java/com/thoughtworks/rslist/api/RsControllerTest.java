@@ -204,12 +204,12 @@ public class RsControllerTest {
 //        assertEquals(1, UserController.users.size());
 //    }
 //
-//    @Test
-//    void shouldThrowException400WhenOutOfRange() throws Exception {
-//        mockMvc.perform(get("/rs/list?start=0&end=10"))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(jsonPath("$.commonError").value("invalid request param"));
-//    }
+    @Test
+    void shouldThrowException400WhenOutOfRange() throws Exception {
+        mockMvc.perform(get("/rs/list?start=0&end=10"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.commonError").value("invalid request param"));
+    }
 //
 //    @Test
 //    void shouldThrowException400WhenIndexOutOfRange() throws Exception {
