@@ -15,6 +15,7 @@ import com.thoughtworks.rslist.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -70,6 +71,22 @@ public class RsController {
             throw new InvalidIndexException("invalid request param");
         }
         return ResponseEntity.ok(rsEvents.subList(start - 1, end));
+    }
+
+    @GetMapping("/rs/vote")
+    public ResponseEntity<List<Vote>> getVoteRecordBetween(@RequestParam(required = false) String startTime,
+                                                           @RequestParam(required = false) String endTime) {
+        LocalDateTime localStartTime = LocalDateTime.parse(startTime);
+        LocalDateTime localEndTime = LocalDateTime.parse(endTime);
+        List<VoteEntity> voteEntityList = voteRepository.findAllByVoteTimeBetween(localStartTime, localEndTime);
+        List<Vote> voteList = voteEntityList.stream()
+                .map(it -> Vote.builder()
+                        .userId(it.getUserId())
+                        .voteNum(it.getVoteNum())
+                        .voteTime(it.getVoteTime().toString())
+                        .build())
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(voteList);
     }
 
     @PostMapping("/rs/event")

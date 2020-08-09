@@ -192,7 +192,7 @@ public class RsControllerTest {
         assertEquals(false, rsEventRepository.findById(rsEventEntity.getId()).isPresent());
     }
 
-//    @Test
+    //    @Test
 //    void shouldNotAddSameUserInUserList() throws Exception {
 //        User userXiaoMin = new User("XiaoMin",20,"male","xm@163.com","12357439274");
 //        RsEvent rsEvent = new RsEvent("第四事件","无分类", userXiaoMin);
@@ -260,6 +260,46 @@ public class RsControllerTest {
         RsEventEntity rsEventEntity = rsEventEntityList.get(0);
         mockMvc.perform(post("/rs/vote/" + rsEventEntity.getId()).contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldGetVoteRecordsBetweenTimeRange() throws Exception {
+        RsEventEntity rsEventEntity = rsEventEntityList.get(1);
+        VoteEntity voteEntity1 = VoteEntity.builder()
+                .rsEventId(rsEventEntity.getId())
+                .userId(rsEventEntity.getUserId())
+                .voteNum(5)
+                .voteTime(LocalDateTime.of(2020, 8, 8, 8, 8))
+                .build();
+        voteEntity1 = voteRepository.save(voteEntity1);
+
+        VoteEntity voteEntity2 = VoteEntity.builder()
+                .rsEventId(rsEventEntity.getId())
+                .userId(rsEventEntity.getUserId())
+                .voteNum(3)
+                .voteTime(LocalDateTime.of(2020, 8, 8, 8, 10))
+                .build();
+        voteEntity2 = voteRepository.save(voteEntity2);
+
+        VoteEntity voteEntity3 = VoteEntity.builder()
+                .rsEventId(rsEventEntity.getId())
+                .userId(rsEventEntity.getUserId())
+                .voteNum(1)
+                .voteTime(LocalDateTime.of(2020, 8, 8, 9, 0))
+                .build();
+        voteEntity3 = voteRepository.save(voteEntity3);
+
+        String startTime=voteEntity1.getVoteTime().toString();
+        String endTime=voteEntity3.getVoteTime().toString();
+        mockMvc.perform(get("/rs/vote?startTime="+startTime+"&endTime="+endTime))
+                .andExpect(jsonPath("$",hasSize(3)))
+                .andExpect(jsonPath("$[0].voteNum").value(voteEntity1.getVoteNum()))
+                .andExpect((jsonPath("$[0].userId").value(voteEntity1.getUserId())))
+                .andExpect(jsonPath("$[1].voteNum").value(voteEntity2.getVoteNum()))
+                .andExpect((jsonPath("$[1].userId").value(voteEntity2.getUserId())))
+                .andExpect(jsonPath("$[2].voteNum").value(voteEntity3.getVoteNum()))
+                .andExpect((jsonPath("$[2].userId").value(voteEntity3.getUserId())))
+                .andExpect(status().isOk());
     }
 
 }
