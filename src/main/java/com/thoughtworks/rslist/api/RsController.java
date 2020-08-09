@@ -21,19 +21,24 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class RsController {
-  @Autowired
-  UserRepository userRepository;
+
+  private final UserRepository userRepository;
   @Autowired
   RsEventRepository rsEventRepository;
   @Autowired
   VoteRepository voteRepository;
 
+  public RsController(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
+
   @GetMapping("/rs/{id}")
-  @JsonView(RsEvent.PublicView.class)
   public ResponseEntity<RsEvent> getOneRsEventById(@PathVariable Integer id) throws InvalidIndexException {
     Optional<RsEventEntity> rsEntityOptional = rsEventRepository.findById(id);
     if (rsEntityOptional.isPresent()) {
@@ -50,40 +55,27 @@ public class RsController {
     }
   }
 
-//  private List<RsEvent> rsList = new ArrayList<RsEvent>();
-//
-//  {
-//    User userXiaoMin = new User("XiaoMin",20,"male","xm@163.com","12357439274");
-//    rsList.add(new RsEvent("第一事件", "无分类", userXiaoMin));
-//    rsList.add(new RsEvent("第二事件", "无分类", userXiaoMin));
-//    rsList.add(new RsEvent("第三事件", "无分类", userXiaoMin));
-//  }
-//
-//
-//  @GetMapping("/rs/{index}")
-//  @JsonView(RsEvent.PublicView.class)
-//  public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index) throws InvalidIndexException{
-//    if(index<0||index>rsList.size()) {
-//      throw new InvalidIndexException("invalid index");
-//    }
-//    return ResponseEntity.ok(rsList.get(index-1));
-//  }
-//
-//  @GetMapping("/rs/list")
-//  @JsonView(RsEvent.PublicView.class)
-//  public ResponseEntity<List<RsEvent>> getRsEventBetween(@RequestParam(required = false) Integer start,
-//                                   @RequestParam(required = false) Integer end) throws InvalidIndexException {
-//    if(start == null || end == null) {
-//      return ResponseEntity.ok(rsList);
-//    }
-//    if(start<0||end>rsList.size()) {
-//      throw new InvalidIndexException("invalid request param");
-//    }
-//    return ResponseEntity.ok(rsList.subList(start-1, end));
-//  }
-//
+
+  @GetMapping("/rs/list")
+  public ResponseEntity<List<RsEvent>> getRsEventBetween(@RequestParam(required = false) Integer start,
+                                   @RequestParam(required = false) Integer end) throws InvalidIndexException {
+    List<RsEvent> rsEvents = rsEventRepository.findAll().stream()
+            .map(it->RsEvent.builder()
+            .eventName(it.getEventName())
+            .keyword(it.getKeyword())
+            .userId(it.getUserId())
+            .build())
+            .collect(Collectors.toList());
+    if(start == null || end == null) {
+      return ResponseEntity.ok(rsEvents);
+    }
+    if(start<0||end>rsEvents.size()) {
+      throw new InvalidIndexException("invalid request param");
+    }
+    return ResponseEntity.ok(rsEvents.subList(start-1, end));
+  }
+
   @PostMapping("/rs/event")
-  @JsonView(RsEvent.PublicView.class)
   public ResponseEntity addOneRsEvent(@RequestBody @Valid RsEvent rsEvent) {
     if (!hasRegistered(rsEvent.getUserId())) {
       return ResponseEntity.badRequest().build();
@@ -100,7 +92,6 @@ public class RsController {
 
 
   @PatchMapping("/rs/{index}")
-  @JsonView(RsEvent.PublicView.class)
   public ResponseEntity updateOneRsEvent(@PathVariable int index, @RequestBody RsEvent rsEvent) {
     Optional<RsEventEntity> optionalRsEventEntity = rsEventRepository.findById(index);
     if(optionalRsEventEntity.isPresent() &&optionalRsEventEntity.get().getUserId().equals(rsEvent.getUserId())) {
@@ -118,13 +109,14 @@ public class RsController {
       return ResponseEntity.badRequest().build();
   }
 
+
 //  @Transactional
 //  @PostMapping("/rs/vote/{eventId}")
-//  @JsonView(RsEvent.PublicView.class)
 //  public ResponseEntity vote(@PathVariable Integer eventId, @RequestBody @Valid Vote vote) {
 //    Integer userId = vote.getUserId();
 //    Optional<RsEventEntity> optionalRsEventEntity = rsEventRepository.findById(eventId);
 //    Optional<UserEntity> optionalUserEntity = userRepository.findById(userId);
+//
 //    if(!optionalRsEventEntity.isPresent()||!optionalUserEntity.isPresent()) {
 //      return ResponseEntity.badRequest().build();
 //    }
@@ -150,7 +142,6 @@ public class RsController {
 //  }
 
   @DeleteMapping("/rs/{id}")
-  @JsonView(RsEvent.PublicView.class)
   public ResponseEntity deleteOneRsEvent(@PathVariable Integer id) {
     rsEventRepository.deleteById(id);
     return ResponseEntity.ok(null);

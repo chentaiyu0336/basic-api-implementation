@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -111,39 +112,24 @@ public class RsControllerTest {
         mockMvc.perform(post("/rs/event").contentType(MediaType.APPLICATION_JSON).content(requestJson))
                 .andExpect(status().isBadRequest());
     }
-    
 
-//    @Test
-//    void shouldGetRsEventBetween() throws Exception {
-//        mockMvc.perform(get("/rs/list?start=1&end=2"))
-//                .andExpect(jsonPath("$[0].eventName", is("第一事件")))
-//                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
-//                .andExpect(jsonPath("$[1].eventName", is("第二事件")))
-//                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
-//                .andExpect(status().isOk());
-//        mockMvc.perform(get("/rs/list?start=2&end=3"))
-//                .andExpect(jsonPath("$[0].eventName", is("第二事件")))
-//                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
-//                .andExpect(jsonPath("$[1].eventName", is("第三事件")))
-//                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
-//                .andExpect(status().isOk());
-//        mockMvc.perform(get("/rs/list?start=1&end=3"))
-//                .andExpect(jsonPath("$[0].eventName", is("第一事件")))
-//                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
-//                .andExpect(jsonPath("$[1].eventName", is("第二事件")))
-//                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
-//                .andExpect(jsonPath("$[2].eventName", is("第三事件")))
-//                .andExpect(jsonPath("$[2].keyWord", is("无分类")))
-//                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
-//                .andExpect(status().isOk());
-//    }
-//
+
+    @Test
+    void shouldGetRsEventBetween() throws Exception {
+        RsEventEntity rsStart = rsEventEntityList.get(0);
+        RsEventEntity rsEnd = rsEventEntityList.get(1);
+
+        mockMvc.perform(get("/rs/list?start=1&end=2"))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].eventName").value(rsStart.getEventName()))
+                .andExpect(jsonPath("$[0].keyword").value(rsStart.getKeyword()))
+                .andExpect(jsonPath("$[0].userId").value(rsStart.getUserId()))
+                .andExpect(jsonPath("$[1].eventName").value(rsEnd.getEventName()))
+                .andExpect(jsonPath("$[1].keyword").value(rsEnd.getKeyword()))
+                .andExpect(jsonPath("$[1].userId").value(rsEnd.getUserId()))
+                .andExpect(status().isOk());
+    }
+
 
 
     @Test

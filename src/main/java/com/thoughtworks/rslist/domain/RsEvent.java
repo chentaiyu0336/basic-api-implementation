@@ -19,21 +19,21 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RsEvent implements Serializable {
+//
+//    public interface PublicView {
+//    }
+//    public interface PrivateView extends PublicView {
+//    }
 
-    public interface PublicView {
-    }
-    public interface PrivateView extends PublicView {
-    }
 
-    @JsonView(PublicView.class)
     @NotNull
     private String eventName;
 
-    @JsonView(PublicView.class)
+
     @NotNull
     private String keyword;
 
-    @JsonView(PrivateView.class)
+
     @NotNull
     private int userId;
 
